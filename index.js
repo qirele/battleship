@@ -13,3 +13,11 @@ export function Ship(length) {
     isSunk
   }
 }
+
+export function Board(board, ships) {
+  return {
+    receiveAttack: ([row, col]) => {
+      board[row][col].hit();
+    },
+  }
+}
