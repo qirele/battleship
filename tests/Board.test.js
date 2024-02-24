@@ -66,3 +66,28 @@ test("Board throws error when two ships are overlapping", () => {
   const problemHere = () => board1.placeShip([5, 4], s2, "up");
   expect(problemHere).toThrow(/overlapping/)
 });
+
+test("Board handles ships placed too close (1)", () => {
+  const s1 = Ship(2);
+  const s2 = Ship(3);
+  board1.placeShip([1, 2], s1, "down");
+  const problemHere = () => board1.placeShip([0, 1], s2, "right");
+  expect(problemHere).toThrow(/overlapping/)
+});
+
+
+// test("Board handles ships placed too close (2)", () => {
+//   const s1 = Ship(2);
+//   const s2 = Ship(3);
+//   board1.placeShip([5, 5], s1, "left");
+//   const problemHere = () => board1.placeShip([8, 5], s2, "up");
+//   expect(problemHere).toThrow(/overlapping/)
+// })
+
+// test("Board handles ships placed too close (3)", () => {
+//   const s1 = Ship(2);
+//   const s2 = Ship(3);
+//   board1.placeShip([6, 5], s1, "left");
+//   const problemHere = () => board1.placeShip([3, 5], s2, "down");
+//   expect(problemHere).toThrow(/overlapping/)
+// })

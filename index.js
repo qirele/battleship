@@ -36,37 +36,37 @@ export function Board() {
     return directions;
   };
 
-  const isShipInDirection = ([row, col], direction, length) => {
+  const _isShipOverlapping = ([row, col], direction, ship) => {
     switch (direction) {
       case "up": {
-        for (let i = 0; i < length; i++) {
-          if (board[row - i][col] !== 0) {
+        for (let i = 0; i < ship.length; i++) {
+          const shipInVicinity = _checkVicinities([row - i, col], ship)
+          if (shipInVicinity)
             return true;
-          }
         }
         break;
       }
       case "right": {
-        for (let i = 0; i < length; i++) {
-          if (board[row][col + i] !== 0) {
+        for (let i = 0; i < ship.length; i++) {
+          const shipInVicinity = _checkVicinities([row, col + i], ship)
+          if (shipInVicinity)
             return true;
-          }
         }
         break;
       }
       case "down": {
-        for (let i = 0; i < length; i++) {
-          if (board[row + i][col] !== 0) {
+        for (let i = 0; i < ship.length; i++) {
+          const shipInVicinity = _checkVicinities([row + i, col], ship)
+          if (shipInVicinity)
             return true;
-          }
         }
         break;
       }
       case "left": {
-        for (let i = 0; i < length; i++) {
-          if (board[row][col - i] !== 0) {
+        for (let i = 0; i < ship.length; i++) {
+          const shipInVicinity = _checkVicinities([row, col - i], ship)
+          if (shipInVicinity)
             return true;
-          }
         }
         break;
       }
@@ -74,9 +74,30 @@ export function Board() {
     }
   };
 
+  const _outOfBounds = ([row, col]) => {
+    return row < 0 || row > 9 || col < 0 || col > 9;
+  }
+
+  const _checkVicinities = ([row, col], ship) => {
+    let legalSquares = [];
+    for (let i = -1; i <= 1; i++) {
+      for (let j = -1; j <= 1; j++) {
+        legalSquares.push(_outOfBounds([row + i, col + j]) ? null : [row + i, col + j])
+      }
+    }
+    legalSquares = legalSquares.filter(el => el !== null);
+
+    const isThereShip = legalSquares.some(([i, j]) => {
+      const square = board[i][j];
+      return square !== 0 && square !== ship;
+    });
+
+    return isThereShip;
+  }
+
   return {
     placeShip: ([row, col], ship, direction) => {
-      if (row < 0 || row > 9 || col < 0 || col > 9)
+      if (_outOfBounds([row, col]))
         throw Error(`[row=${row},col=${col}] out of bounds!`);
 
       const isThereShip = board[row][col] !== 0;
@@ -87,9 +108,10 @@ export function Board() {
       if (!directions.includes(direction))
         throw Error(`There is no space for a ship in "${direction}"`)
 
-      const isShipOverlapping = isShipInDirection([row, col], direction, ship.length);
+      const isShipOverlapping = _isShipOverlapping([row, col], direction, ship);
       if (isShipOverlapping)
-        throw Error(`There is a ship towards ${direction} that causes overlapping`);
+        throw Error(`There is a ship in the vicinity that causes overlapping`);
+
 
       switch (direction) {
         case "up": {
@@ -120,6 +142,22 @@ export function Board() {
     },
     get board() {
       return board;
-    }
+    },
   }
 }
+
+/**
+ * 
+ * 
+            const directions = getShipLegalDirections([row - i, col], { length: 1 });
+          const possibilities = [
+            directions.includes("right") ? board[row - i][col + 1] : null,
+            directions.includes("left") ? board[row - i][col - 1] : null,
+            i === 0 && directions.includes("down") ? board[row + 1][col] : null,
+            i === (length - 1) && directions.includes("up") ? board[row - length][col] : null,
+          ].filter(el => el !== null);
+
+          if (board[row - i][col] !== 0 || possibilities.some(el => el !== 0)) {
+            return true;
+          }
+ */
