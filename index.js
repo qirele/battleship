@@ -174,3 +174,36 @@ export function Board() {
     },
   }
 }
+
+export function Player(board) {
+  const possibleMoves = [];
+  for (let i = 0; i < 10; i++) {
+    for (let j = 0; j < 10; j++) {
+      possibleMoves.push([i, j]);
+    }
+  }
+  
+  
+  return {
+    gameboard: board,
+    board: board.board,
+    attack: (opponent, [row, col]) => {
+      const opponentSquare = opponent.board[row][col];
+      if (opponentSquare === "x" || opponentSquare === "h") {
+        return "twice";
+      }
+      opponent.gameboard.receiveAttack([row, col])
+      if (opponent.board[row][col] === "x") return "miss";
+      if (opponent.board[row][col] === "h") return "hit";
+    },
+    randomPlay: () => {
+      if (possibleMoves.length === 0)
+        throw Error("no possible moves");
+      const idx = Math.floor(Math.random() * possibleMoves.length);
+      const [row, col] = possibleMoves[idx];
+      possibleMoves.splice(idx, 1);
+      
+      return { row, col };
+    }
+  }
+}
