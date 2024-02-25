@@ -113,3 +113,66 @@ test("Board handles ships placed too close (3)", () => {
   const problemHere = () => board1.placeShip([2, 7], s3, "left");
   expect(problemHere).toThrow(/overlapping/)
 });
+
+test("Board receives attack and calls hit on the proper ship", () => {
+  const s1 = Ship(3);
+  const spy = jest.spyOn(s1, "hit");
+  board1.placeShip([5, 4], s1, "right");
+  board1.receiveAttack([5, 5]);
+
+  expect(spy).toHaveBeenCalled();
+});
+
+test("receiveAttack handles out of bounds coords", () => {
+  expect(() => board1.receiveAttack([-1, 5])).toThrow(/out of bounds/);
+});
+
+test("Board receives attack,gets hit, remembers where the ship have been hit", () => {
+  const s1 = Ship(3);
+  const spy = jest.spyOn(s1, "hit");
+  board1.placeShip([3, 1], s1, "right");
+  board1.receiveAttack([3, 3]);
+  expect(spy).toHaveBeenCalled();
+  expect(board1.board[3][3]).toEqual("h");
+});
+
+test("Board receives attack, the attack misses, board remembers the missed spot", () => {
+  const s1 = Ship(3);
+  board1.placeShip([8, 4], s1, "up");
+  board1.receiveAttack([5, 4]);
+  expect(board1.board[5][4]).toEqual("x");
+});
+
+test("Board receives attack on one square multiple times, ignores them", () => {
+  const s1 = Ship(3);
+  board1.placeShip([8, 4], s1, "up");
+  board1.receiveAttack([7, 4]);
+  expect(board1.receiveAttack([7, 4])).toBe("ignore");
+});
+
+test("Board reports whether all ships have been sunk or not (1)", () => {
+  const s1 = Ship(2);
+  const s2 = Ship(2);
+  const s3 = Ship(2);
+
+  board1.placeShip([1, 1], s1, "right");
+  board1.placeShip([3, 1], s2, "right");
+  board1.placeShip([5, 1], s3, "right");
+  board1.receiveAttack([1, 1]); board1.receiveAttack([1, 2]);
+  board1.receiveAttack([3, 1]); board1.receiveAttack([3, 2]);
+  board1.receiveAttack([5, 1]); board1.receiveAttack([5, 2]);
+  expect(board1.report()).toBe("all ships sunk")
+});
+
+test("Board reports whether all ships have been sunk or not (2)", () => {
+  const s1 = Ship(2);
+  const s2 = Ship(2);
+  const s3 = Ship(2);
+
+  board1.placeShip([1, 1], s1, "right");
+  board1.placeShip([3, 1], s2, "right");
+  board1.placeShip([5, 1], s3, "right");
+  board1.receiveAttack([1, 1]); board1.receiveAttack([1, 2]);
+  board1.receiveAttack([3, 1]); board1.receiveAttack([3, 2]);
+  expect(board1.report()).toBe("not all ships sunk")
+});

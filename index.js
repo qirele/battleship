@@ -20,6 +20,8 @@ export function Board() {
     let arr = Array(10).fill(0);
     board.push(arr);
   }
+  let allShipsSunk = false;
+  let addedShips = [];
 
   const getShipLegalDirections = ([row, col], ship) => {
     const hasSpaceUp = (row - (ship.length - 1)) >= 0;
@@ -95,6 +97,10 @@ export function Board() {
     return isThereShip;
   }
 
+  const _areAllShipsSunk = () => {
+    return addedShips.every(el => el.ship.timesHit === el.ship.length);
+  }
+
   return {
     placeShip: ([row, col], ship, direction) => {
       if (_outOfBounds([row, col]))
@@ -112,6 +118,7 @@ export function Board() {
       if (isShipOverlapping)
         throw Error(`There is a ship in the vicinity that causes overlapping`);
 
+      addedShips.push({ ship, direction });
 
       switch (direction) {
         case "up": {
@@ -139,6 +146,28 @@ export function Board() {
           break;
         }
       }
+    },
+    receiveAttack: ([row, col]) => {
+      if (_outOfBounds([row, col]))
+        throw Error("Provided coords out of bounds");
+
+      const square = board[row][col];
+
+      if (square === "h" || square === "x")
+        return "ignore";
+
+      if (square !== 0) {
+        square.hit();
+        if (_areAllShipsSunk())
+          allShipsSunk = true;
+
+        board[row][col] = "h";
+      } else {
+        board[row][col] = "x";
+      }
+    },
+    report: () => {
+      return allShipsSunk ? "all ships sunk" : "not all ships sunk";
     },
     get board() {
       return board;
