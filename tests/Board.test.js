@@ -39,6 +39,27 @@ test("Board places ship of length 4 to the left", () => {
   expect(board1.board[8][3]).toEqual(s1);
 });
 
+test("Board places ship downwards against wall (2)", () => {
+  const s1 = Ship(2);
+  board1.placeShip([8, 4], s1, "down");
+  expect(board1.board[8][4]).toEqual(s1);
+  expect(board1.board[9][4]).toEqual(s1);
+});
+
+test("Board places ship right(2) against wall", () => {
+  const s1 = Ship(2);
+  board1.placeShip([7, 8], s1, "right");
+  expect(board1.board[7][8]).toEqual(s1);
+  expect(board1.board[7][9]).toEqual(s1);
+});
+
+test("Board places ship left(2) against wall", () => {
+  const s1 = Ship(2);
+  board1.placeShip([4, 1], s1, "left");
+  expect(board1.board[4][1]).toEqual(s1);
+  expect(board1.board[4][0]).toEqual(s1);
+});
+
 test("Board throws error when placing ship in the same space", () => {
   const s1 = Ship(2);
   const s2 = Ship(3);
@@ -75,19 +96,20 @@ test("Board handles ships placed too close (1)", () => {
   expect(problemHere).toThrow(/overlapping/)
 });
 
+test("Board handles ships placed too close (2)", () => {
+  const s1 = Ship(2);
+  const s2 = Ship(3);
+  board1.placeShip([3, 3], s1, "left");
+  const problemHere = () => board1.placeShip([2, 3], s2, "up");
+  expect(problemHere).toThrow(/overlapping/)
+});
 
-// test("Board handles ships placed too close (2)", () => {
-//   const s1 = Ship(2);
-//   const s2 = Ship(3);
-//   board1.placeShip([5, 5], s1, "left");
-//   const problemHere = () => board1.placeShip([8, 5], s2, "up");
-//   expect(problemHere).toThrow(/overlapping/)
-// })
-
-// test("Board handles ships placed too close (3)", () => {
-//   const s1 = Ship(2);
-//   const s2 = Ship(3);
-//   board1.placeShip([6, 5], s1, "left");
-//   const problemHere = () => board1.placeShip([3, 5], s2, "down");
-//   expect(problemHere).toThrow(/overlapping/)
-// })
+test("Board handles ships placed too close (3)", () => {
+  const s1 = Ship(2);
+  const s2 = Ship(3);
+  const s3 = Ship(3);
+  board1.placeShip([0, 9], s1, "down");
+  board1.placeShip([3, 4], s2, "down");
+  const problemHere = () => board1.placeShip([2, 7], s3, "left");
+  expect(problemHere).toThrow(/overlapping/)
+});

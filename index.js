@@ -22,10 +22,10 @@ export function Board() {
   }
 
   const getShipLegalDirections = ([row, col], ship) => {
-    const hasSpaceUp = (row - ship.length) >= 0;
-    const hasSpaceRight = (col + ship.length) <= 9;
-    const hasSpaceDown = (row + ship.length) <= 9;
-    const hasSpaceLeft = (col - ship.length) >= 0;
+    const hasSpaceUp = (row - (ship.length - 1)) >= 0;
+    const hasSpaceRight = (col + (ship.length - 1)) <= 9;
+    const hasSpaceDown = (row + (ship.length - 1)) <= 9;
+    const hasSpaceLeft = (col - (ship.length - 1)) >= 0;
     const directions = [
       hasSpaceUp ? "up" : null,
       hasSpaceRight ? "right" : null,
@@ -106,7 +106,7 @@ export function Board() {
 
       const directions = getShipLegalDirections([row, col], ship);
       if (!directions.includes(direction))
-        throw Error(`There is no space for a ship in "${direction}"`)
+        throw Error(`There is no space for a ship in "${direction}"${row} ${col}`)
 
       const isShipOverlapping = _isShipOverlapping([row, col], direction, ship);
       if (isShipOverlapping)
@@ -145,19 +145,3 @@ export function Board() {
     },
   }
 }
-
-/**
- * 
- * 
-            const directions = getShipLegalDirections([row - i, col], { length: 1 });
-          const possibilities = [
-            directions.includes("right") ? board[row - i][col + 1] : null,
-            directions.includes("left") ? board[row - i][col - 1] : null,
-            i === 0 && directions.includes("down") ? board[row + 1][col] : null,
-            i === (length - 1) && directions.includes("up") ? board[row - length][col] : null,
-          ].filter(el => el !== null);
-
-          if (board[row - i][col] !== 0 || possibilities.some(el => el !== 0)) {
-            return true;
-          }
- */
