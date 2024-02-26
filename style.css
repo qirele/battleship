@@ -25,14 +25,23 @@ body {
   grid-template-rows: repeat(10, 1fr);
 }
 
-.empty-square {
+.board.attacking {
+  opacity: 0.25;
+}
+
+.board.receiving {
+  outline: 1px solid #ff9d9d;
+}
+
+.square {
   outline: 1px solid #aaaaaa;
 }
 
-.ship {
+.square.ship {
   outline: 3px solid #ffffff;
+  background: #838383;
 }
-
-.ship-hit {
+.square.ship.hit {
   outline: 2px solid #a30000;
+  background: #838383;
 }
