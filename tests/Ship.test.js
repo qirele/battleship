@@ -1,4 +1,4 @@
-import { Ship } from "../index.js";
+import { Ship } from "../logic.js";
 
 test("Ship has length property of 3", () => {
   const ship1 = Ship(3);

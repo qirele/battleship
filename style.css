@@ -1,0 +1,38 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #1e1e1e;
+  color: #cacaca;
+}
+
+.app {
+  display: flex;
+  justify-content: center;
+  gap: 100px;
+  padding: 100px 0 0 0;
+}
+
+.board {
+  width: 500px;
+  height: 500px;
+  outline: 1px solid #aaaaaa;
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: repeat(10, 1fr);
+}
+
+.empty-square {
+  outline: 1px solid #aaaaaa;
+}
+
+.ship {
+  outline: 3px solid #ffffff;
+}
+
+.ship-hit {
+  outline: 2px solid #a30000;
+}

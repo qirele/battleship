@@ -1,4 +1,4 @@
-import { Board, Ship, Player } from '../index.js';
+import { Board, Ship, Player } from '../logic.js';
 
 let board1, board2, player1, player2;
 
