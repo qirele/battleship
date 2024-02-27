@@ -16,4 +16,5 @@ import { render, attachListeners } from './rendering.js';
 
   attachListeners(player1, player2);
 
+
 })();

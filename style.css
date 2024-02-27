@@ -91,3 +91,18 @@ body {
   background: #838383;
   z-index: 100;
 }
+
+.gameover {
+  width: 500px;
+  height: 300px;
+  opacity: 0.8;
+  background-color: rgb(32, 32, 32);
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
