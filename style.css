@@ -37,11 +37,57 @@ body {
   outline: 1px solid #aaaaaa;
 }
 
+.square.animating {
+  animation-name: animateSquare;
+  animation-duration: 400ms;
+  animation-delay: 300ms;
+}
+
+.square.miss {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.square.miss::after,
+.square.miss::before {
+  content: "";
+  position: absolute;
+  background: #cacaca;
+  width: 100%;
+  height: 4px;
+}
+
+.square.miss::after {
+  transform: rotate(45deg);
+}
+
+.square.miss::before {
+  transform: rotate(-45deg);
+}
+
+@keyframes animateSquare {
+  0% {
+    transform: scale(1);
+    background-color: #aaaaaa;
+  }
+  50% {
+    transform: scale(2);
+    background-color: #ff9d9d;
+  }
+  100% {
+    transform: scale(1);
+    background-color: #aaaaaa;
+  }
+}
+
 .square.ship {
   outline: 3px solid #ffffff;
   background: #838383;
 }
 .square.ship.hit {
-  outline: 2px solid #a30000;
+  outline: 5px solid #a30000;
   background: #838383;
+  z-index: 100;
 }

@@ -52,25 +52,26 @@ export function attachListeners(player1, player2) {
       isPlayer1Move = !isPlayer1Move;
       rerender(player1, player2, isPlayer1Move);
       const sleep = ms => new Promise(r => setTimeout(r, ms));
-      sleep(2000)
+      sleep(300)
         .then(() => {
           // computer makes move 
           const coords = player2.randomPlay();
           player2.attack(player1, [coords.row, coords.col]);
           isPlayer1Move = !isPlayer1Move;
-          rerender(player1, player2, isPlayer1Move);
+          rerender(player1, player2, isPlayer1Move, coords);
         })
     });
   });
 }
 
-function rerender(player1, player2, isPlayer1Move) {
+function rerender(player1, player2, isPlayer1Move, coords) {
   const playerSquares = document.querySelectorAll(".app > :nth-child(1) div");
   const compSquares = document.querySelectorAll(".app > :nth-child(2) div");
   const playerBoardDiv = document.querySelector(".app > :nth-child(1)");
   const computerBoardDiv = document.querySelector(".app > :nth-child(2)");
   playerBoardDiv.className = (isPlayer1Move ? "board attacking" : "board receiving");
   computerBoardDiv.className = (isPlayer1Move ? "board receiving" : "board attacking");
+
 
   playerSquares.forEach(sq => {
     const [i, j] = [sq.dataset.row, sq.dataset.col];
@@ -82,9 +83,15 @@ function rerender(player1, player2, isPlayer1Move) {
     }
     if (player1.board[i][j] === "x") {
       sq.className = "square miss";
-      sq.textContent = "X";
+      // sq.textContent = "X";
     }
   });
+
+  if (coords !== undefined) {
+    const { row, col } = coords;
+    const square = playerBoardDiv.querySelector(`[data-row="${row}"][data-col="${col}"]`);
+    square.classList.add("animating");
+  }
 
   compSquares.forEach(sq => {
     const [i, j] = [sq.dataset.row, sq.dataset.col];
@@ -96,7 +103,8 @@ function rerender(player1, player2, isPlayer1Move) {
     }
     if (player2.board[i][j] === "x") {
       sq.className = "square miss";
-      sq.textContent = "X";
+      // sq.textContent = "X";
     }
   });
+
 }
