@@ -89,14 +89,13 @@ body {
 .square.ship.hit {
   outline: 5px solid #a30000;
   background: #838383;
-  z-index: 100;
+  z-index: 0;
 }
 
 .gameover {
   width: 500px;
   height: 300px;
-  opacity: 0.8;
-  background-color: rgb(32, 32, 32);
+  background: rgb(32, 32, 32, 0.9);
   position: fixed;
   top: 50%;
   left: 50%;
@@ -105,4 +104,5 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  z-index: 1;
 }

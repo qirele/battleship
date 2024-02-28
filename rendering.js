@@ -52,7 +52,10 @@ export function attachListeners(player1, player2) {
     square.addEventListener("click", (el) => {
       const rowIdx = Number(el.target.dataset.row);
       const colIdx = Number(el.target.dataset.col);
-      player2.gameboard.receiveAttack([rowIdx, colIdx])
+      const result = player2.gameboard.receiveAttack([rowIdx, colIdx])
+      if (result === "ignore")
+        return;
+
       isPlayer1Move = !isPlayer1Move;
       rerender(player1, player2, isPlayer1Move);
       const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -124,26 +127,35 @@ function rerender(player1, player2, isPlayer1Move, coords) {
 }
 
 function gameOverScreen(text) {
-  // const gameboard1 = Board();
-  // gameboard1.placeShip([2, 2], Ship(3), "right");
-  // gameboard1.placeShip([4, 2], Ship(3), "down");
-  // gameboard1.placeShip([3, 5], Ship(4), "right");
-  // const gameboard2 = Board();
-  // gameboard2.placeShip([1, 3], Ship(3), "down");
-  // gameboard2.placeShip([9, 1], Ship(4), "up");
-  // gameboard2.placeShip([3, 6], Ship(3), "left");
-  // const player1 = Player(gameboard1);
-  // const player2 = Player(gameboard2);
   const body = document.body;
   const gameoverDiv = document.createElement("div");
   gameoverDiv.classList.add("gameover");
   const p = document.createElement("p");
   p.textContent = text;
+  const startBtn = document.createElement("button");
+  startBtn.textContent = "Play Again";
   gameoverDiv.appendChild(p);
+  gameoverDiv.appendChild(startBtn);
   body.appendChild(gameoverDiv);
 
   // remove listeners from computerBoardDiv squares
   const computerBoardDiv = document.querySelector(".app > :nth-child(2)");
   const clone = computerBoardDiv.cloneNode(true);
   computerBoardDiv.replaceWith(clone);
+
+  startBtn.addEventListener("click", () => {
+    const gameboard1 = Board();
+    gameboard1.placeShip([2, 2], Ship(3), "right");
+    gameboard1.placeShip([4, 2], Ship(3), "down");
+    gameboard1.placeShip([3, 6], Ship(4), "right");
+    const gameboard2 = Board();
+    gameboard2.placeShip([1, 3], Ship(3), "down");
+    gameboard2.placeShip([9, 1], Ship(4), "up");
+    gameboard2.placeShip([6, 6], Ship(3), "left");
+    const player1 = Player(gameboard1);
+    const player2 = Player(gameboard2);
+    render(gameboard1, gameboard2);
+    attachListeners(player1, player2);
+    gameoverDiv.remove();
+  });
 }
