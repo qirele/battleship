@@ -23,6 +23,22 @@ body {
   display: grid;
   grid-template-columns: repeat(10, 1fr);
   grid-template-rows: repeat(10, 1fr);
+  position: relative;
+}
+
+.computer-board::before,
+.player-board::before {
+  display: block;
+  position: absolute;
+  top: -20px;
+}
+
+.computer-board::before {
+  content: "Computer's Board";
+}
+
+.player-board::before {
+  content: "Player's Board";
 }
 
 .board.attacking {

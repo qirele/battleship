@@ -12,7 +12,7 @@ import { render, attachListeners } from './rendering.js';
   gameboard2.placeShip([4, 8], Ship(3), "left");
   const player1 = Player(gameboard1);
   const player2 = Player(gameboard2);
-  render(gameboard1, gameboard2);
+  render({ player: player1, name: "Player" }, { player: player2, name: "Computer" });
 
   attachListeners(player1, player2);
 

@@ -1,18 +1,21 @@
 import { Board, Player, Ship } from "./logic.js";
 
-export function render(gameboard1, gameboard2) {
+export function render(player1, player2) {
   const appDiv = document.querySelector(".app");
   while (appDiv.firstChild) {
     appDiv.removeChild(appDiv.firstChild);
   }
-  renderBoard(gameboard1);
-  renderBoard(gameboard2);
+  renderBoard(player1);
+  renderBoard(player2);
 }
 
-function renderBoard(gameboard) {
+function renderBoard(player) {
+  const gameboard = player.player.gameboard;
+  const playerName = player.name;
   const appDiv = document.querySelector(".app");
   const boardDiv = document.createElement("div");
   boardDiv.classList.add("board");
+  boardDiv.classList.add(playerName === "Computer" ? "computer-board" : "player-board");
   appDiv.appendChild(boardDiv);
 
   for (let i = 0; i < 10; i++) {
@@ -40,8 +43,10 @@ export function attachListeners(player1, player2) {
   const playerBoardDiv = document.querySelector(".app > :nth-child(1)");
   const computerBoardDiv = document.querySelector(".app > :nth-child(2)");
   let isPlayer1Move = true;
-  playerBoardDiv.className = (isPlayer1Move ? "board attacking" : "board receiving");
-  computerBoardDiv.className = (isPlayer1Move ? "board receiving" : "board attacking");
+  playerBoardDiv.classList.add((isPlayer1Move ? "attacking" : "receiving"));
+  playerBoardDiv.classList.remove((isPlayer1Move ? "receiving" : "attacking"));
+  computerBoardDiv.classList.add((isPlayer1Move ? "receiving" : "attacking"));
+  computerBoardDiv.classList.remove((isPlayer1Move ? "attacking" : "receiving"));
 
   // 1st, remove all listeners, to make sure we arent slowing down our game https://stackoverflow.com/a/4386514
   const clone = computerBoardDiv.cloneNode(true);
@@ -86,8 +91,10 @@ function rerender(player1, player2, isPlayer1Move, coords) {
   const compSquares = document.querySelectorAll(".app > :nth-child(2) div");
   const playerBoardDiv = document.querySelector(".app > :nth-child(1)");
   const computerBoardDiv = document.querySelector(".app > :nth-child(2)");
-  playerBoardDiv.className = (isPlayer1Move ? "board attacking" : "board receiving");
-  computerBoardDiv.className = (isPlayer1Move ? "board receiving" : "board attacking");
+  playerBoardDiv.classList.add((isPlayer1Move ? "attacking" : "receiving"));
+  playerBoardDiv.classList.remove((isPlayer1Move ? "receiving" : "attacking"));
+  computerBoardDiv.classList.add((isPlayer1Move ? "receiving" : "attacking"));
+  computerBoardDiv.classList.remove((isPlayer1Move ? "attacking" : "receiving"));
 
 
   playerSquares.forEach(sq => {
@@ -120,7 +127,6 @@ function rerender(player1, player2, isPlayer1Move, coords) {
     }
     if (player2.board[i][j] === "x") {
       sq.className = "square miss";
-      // sq.textContent = "X";
     }
   });
 
@@ -154,7 +160,7 @@ function gameOverScreen(text) {
     gameboard2.placeShip([6, 6], Ship(3), "left");
     const player1 = Player(gameboard1);
     const player2 = Player(gameboard2);
-    render(gameboard1, gameboard2);
+    render({ player: player1, name: "Player" }, { player: player2, name: "Computer" });
     attachListeners(player1, player2);
     gameoverDiv.remove();
   });
