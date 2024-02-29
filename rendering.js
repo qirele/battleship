@@ -68,7 +68,7 @@ export function attachSquareListeners(player1, player2) {
   const clone = computerBoardDiv.cloneNode(true);
   computerBoardDiv.replaceWith(clone);
 
-  const computerSquares = document.querySelectorAll(".app > :nth-child(2) div")
+  const computerSquares = document.querySelectorAll(".app > .computer-board div")
   computerSquares.forEach(square => {
     square.addEventListener("click", (el) => {
       const rowIdx = Number(el.target.dataset.row);
@@ -155,7 +155,7 @@ function gameOverScreen(text) {
   p.textContent = text;
   const startBtn = document.createElement("button");
   startBtn.textContent = "Play Again";
-  startBtn.classList.add("start-btn");
+  startBtn.classList.add("cool-btn");
   gameoverDiv.appendChild(p);
   gameoverDiv.appendChild(startBtn);
   body.appendChild(gameoverDiv);
@@ -192,21 +192,27 @@ export function startScreen() {
 
   const select1 = createSelect("directions");
 
-  let shipLength = 4;
+  let lengths = [4, 3, 3, 2, 1];
+  let i = lengths.length;
+  let shipLength = lengths.shift();
   const btn1 = document.createElement("button");
+  btn1.classList.add("cool-btn");
   btn1.textContent = "Place Ship";
   btn1.addEventListener("click", () => {
-    if (shipLength === 1) {
-      console.log("Youre done generating ships.");
+    if (i === 0) {
+      console.log("Youre not generating more ships");
       return;
     }
+
     const rowIdx = Number(document.querySelector("#row").value);
     const colIdx = Number(document.querySelector("#col").value);
     const selectValue = document.querySelector("#directions").value;
     player1.gameboard.placeShip([rowIdx, colIdx], Ship(shipLength), selectValue);
     render({ player: player1, name: "Player" }, { player: player2, name: "Computer" });
-    shipLength--;
-    if (shipLength === 1) {
+    shipLength = lengths.shift();
+    i--;
+
+    if (i === 0) {
       generateRandomShipsFor(player2);
       render({ player: player1, name: "Player" }, { player: player2, name: "Computer" });
       const btn = generateStartBtn();
@@ -217,6 +223,7 @@ export function startScreen() {
     }
   });
   const btn2 = document.createElement("button");
+  btn2.classList.add("cool-btn");
   btn2.textContent = "Place Random Ship";
 
 
@@ -266,8 +273,10 @@ function createSelect(id) {
 }
 
 function generateRandomShipsFor(player) {
-  let shipLength = 4;
-  while (shipLength > 1) {
+  let lengths = [4, 3, 3, 2, 1];
+  let i = lengths.length;
+  let shipLength = lengths.shift();
+  while (i > 0) {
     const rowIdx = Math.floor(Math.random() * 10);
     const colIdx = Math.floor(Math.random() * 10);
     const dirs = player.gameboard.getShipLegalDirections([rowIdx, colIdx], { length: shipLength });
@@ -278,13 +287,14 @@ function generateRandomShipsFor(player) {
       console.log(err);
       continue;
     }
-    shipLength--;
+    shipLength = lengths.shift();
+    i--;
   }
 }
 
 function generateStartBtn() {
   const btn = document.createElement("button");
-  btn.classList.add("start-btn");
+  btn.classList.add("cool-btn");
   btn.textContent = "Start Game";
   const startScreenDiv = document.querySelector(".startscreen");
   startScreenDiv.replaceChildren();
