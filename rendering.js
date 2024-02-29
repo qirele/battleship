@@ -21,13 +21,24 @@ function renderBoard(player) {
   for (let i = 0; i < 10; i++) {
     for (let j = 0; j < 10; j++) {
       const squareDiv = document.createElement("div");
-      if (i === 0)
-        squareDiv.textContent = j;
+      const span = document.createElement("span");
+      if (i === 0) {
+        span.textContent = j;
+        span.classList.add("number-up");
+      }
       if (j === 0) {
-        squareDiv.textContent = i;
+        span.textContent = i;
+        span.classList.add("number-left");
+      }
+      squareDiv.appendChild(span);
+      if (i === 0 && j === 0) {
+        const secondSpan = document.createElement("span");
+        secondSpan.textContent = 0;
+        secondSpan.classList.add("number-up");
+        squareDiv.appendChild(secondSpan);
       }
       squareDiv.classList.add("square");
-      if (typeof gameboard.board[i][j] === "object") {
+      if (typeof gameboard.board[i][j] === "object" && playerName === "Player") {
         squareDiv.classList.add("ship");
       }
       if (gameboard.board[i][j] === "h") {
@@ -123,9 +134,9 @@ function rerender(player1, player2, isPlayer1Move, coords) {
 
   compSquares.forEach(sq => {
     const [i, j] = [sq.dataset.row, sq.dataset.col];
-    if (typeof player2.board[i][j] === "object") {
-      sq.className = "square ship"
-    }
+    // if (typeof player2.board[i][j] === "object") {
+    //   sq.className = "square ship"
+    // }
     if (player2.board[i][j] === "h") {
       sq.className = "square ship hit";
     }
@@ -196,7 +207,7 @@ export function startScreen() {
     render({ player: player1, name: "Player" }, { player: player2, name: "Computer" });
     shipLength--;
     if (shipLength === 1) {
-      generateComputerShips(player2);
+      generateRandomShipsFor(player2);
       render({ player: player1, name: "Player" }, { player: player2, name: "Computer" });
       const btn = generateStartBtn();
       btn.addEventListener("click", () => {
@@ -205,6 +216,8 @@ export function startScreen() {
       });
     }
   });
+  const btn2 = document.createElement("button");
+  // btn2.addEventListener("click")
 
 
   startDiv.appendChild(p1);
@@ -251,14 +264,14 @@ function createSelect(id) {
   return div1;
 }
 
-function generateComputerShips(player) {
+function generateRandomShipsFor(player) {
   let shipLength = 4;
   while (shipLength > 1) {
+    const rowIdx = Math.floor(Math.random() * 10);
+    const colIdx = Math.floor(Math.random() * 10);
+    const dirs = player.gameboard.getShipLegalDirections([rowIdx, colIdx], { length: shipLength });
+    const dirIdx = Math.floor(Math.random() * dirs.length);
     try {
-      const rowIdx = Math.floor(Math.random() * 10);
-      const colIdx = Math.floor(Math.random() * 10);
-      const dirs = player.gameboard.getShipLegalDirections([rowIdx, colIdx], { length: shipLength });
-      const dirIdx = Math.floor(Math.random() * dirs.length);
       player.gameboard.placeShip([rowIdx, colIdx], Ship(shipLength), dirs[dirIdx])
     } catch (err) {
       console.log(err);

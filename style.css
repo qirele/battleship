@@ -13,7 +13,7 @@ body {
   display: flex;
   justify-content: center;
   gap: 100px;
-  padding: 60px 0 0 0;
+  padding: 80px 0 0 0;
 }
 
 .board {
@@ -24,13 +24,14 @@ body {
   grid-template-columns: repeat(10, 1fr);
   grid-template-rows: repeat(10, 1fr);
   position: relative;
+  margin: 0 20px 0 20px;
 }
 
 .computer-board::before,
 .player-board::before {
   display: block;
   position: absolute;
-  top: -35px;
+  top: -55px;
   font-size: 25px;
 }
 
@@ -52,7 +53,21 @@ body {
 
 .square {
   outline: 1px solid #aaaaaa;
-  padding: 0 0 0 5px;
+  position: relative;
+}
+
+.square > span.number-up{
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.square > span.number-left {
+  position: absolute;
+  left: -20px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .square.animating {
