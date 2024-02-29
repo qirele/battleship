@@ -225,6 +225,26 @@ export function startScreen() {
   const btn2 = document.createElement("button");
   btn2.classList.add("cool-btn");
   btn2.textContent = "Place Random Ship";
+  btn2.addEventListener("click", () => {
+    if (i === 0) {
+      console.log("Youre not generating more ships");
+      return;
+    }
+    generateRandomShip(player1, shipLength);
+    render({ player: player1, name: "Player" }, { player: player2, name: "Computer" });
+    shipLength = lengths.shift();
+    i--;
+
+    if (i === 0) {
+      generateRandomShipsFor(player2);
+      render({ player: player1, name: "Player" }, { player: player2, name: "Computer" });
+      const btn = generateStartBtn();
+      btn.addEventListener("click", () => {
+        attachSquareListeners(player1, player2);
+        startDiv.remove();
+      });
+    }
+  });
 
 
   startDiv.appendChild(p1);
@@ -289,6 +309,22 @@ function generateRandomShipsFor(player) {
     }
     shipLength = lengths.shift();
     i--;
+  }
+}
+
+function generateRandomShip(player, length) {
+  while (true) {
+    const rowIdx = Math.floor(Math.random() * 10);
+    const colIdx = Math.floor(Math.random() * 10);
+    const dirs = player.gameboard.getShipLegalDirections([rowIdx, colIdx], { length });
+    const dirIdx = Math.floor(Math.random() * dirs.length);
+    try {
+      player.gameboard.placeShip([rowIdx, colIdx], Ship(length), dirs[dirIdx])
+    } catch (err) {
+      console.log(err);
+      continue;
+    }
+    break;
   }
 }
 
