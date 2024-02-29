@@ -217,7 +217,7 @@ export function startScreen() {
     }
   });
   const btn2 = document.createElement("button");
-  // btn2.addEventListener("click")
+  btn2.textContent = "Place Random Ship";
 
 
   startDiv.appendChild(p1);
@@ -225,6 +225,7 @@ export function startScreen() {
   startDiv.appendChild(div2);
   startDiv.appendChild(select1);
   startDiv.appendChild(btn1);
+  startDiv.appendChild(btn2);
   document.body.appendChild(startDiv);
 }
 

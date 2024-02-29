@@ -56,7 +56,7 @@ body {
   position: relative;
 }
 
-.square > span.number-up{
+.square > span.number-up {
   position: absolute;
   top: -20px;
   left: 50%;
@@ -148,7 +148,7 @@ body {
   left: 50%;
   bottom: 300px;
   transform: translateX(-50%);
-  z-index: 1; 
+  z-index: 1;
 
   background: rgb(202, 202, 202, 0.8);
   color: black;
@@ -176,4 +176,18 @@ body {
   background-color: #cacaca;
   font-size: 40px;
   cursor: pointer;
+}
+
+.startscreen button {
+  display: block;
+  width: 100%;
+  appearance: none;
+  border: 2px solid #fff;
+  box-shadow: 0px 5px 5px #4f4f4f;
+  border-radius: 20px;
+  color: #fff;
+  background-color: #050101;
+  font-size: 40px;
+  cursor: pointer;
+  margin: 10px 0;
 }
