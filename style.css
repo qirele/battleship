@@ -13,7 +13,7 @@ body {
   display: flex;
   justify-content: center;
   gap: 100px;
-  padding: 100px 0 0 0;
+  padding: 60px 0 0 0;
 }
 
 .board {
@@ -30,7 +30,8 @@ body {
 .player-board::before {
   display: block;
   position: absolute;
-  top: -20px;
+  top: -35px;
+  font-size: 25px;
 }
 
 .computer-board::before {
@@ -51,6 +52,7 @@ body {
 
 .square {
   outline: 1px solid #aaaaaa;
+  padding: 0 0 0 5px;
 }
 
 .square.animating {
@@ -121,4 +123,42 @@ body {
   flex-direction: column;
   justify-content: center;
   z-index: 1;
+}
+
+.startscreen {
+  padding: 5px 10px;
+  width: 90%;
+  max-width: 500px;
+  position: fixed;
+  left: 50%;
+  bottom: 300px;
+  transform: translateX(-50%);
+  z-index: 1; 
+
+  background: rgb(202, 202, 202, 0.8);
+  color: black;
+}
+
+.input-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 10px 0;
+}
+
+.input-wrapper input {
+  width: 100%;
+}
+
+.input-wrapper > * {
+  flex: 1 1 0px;
+}
+
+.start-btn {
+  width: 100%;
+  appearance: none;
+  border: none;
+  color: #1e1e1e;
+  background-color: #cacaca;
+  font-size: 40px;
+  cursor: pointer;
 }

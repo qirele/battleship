@@ -74,6 +74,8 @@ export function Board() {
       }
       default: return false;
     }
+
+    return false;
   };
 
   const _outOfBounds = ([row, col]) => {
@@ -172,6 +174,7 @@ export function Board() {
     get board() {
       return board;
     },
+    getShipLegalDirections
   }
 }
 
@@ -182,8 +185,7 @@ export function Player(board) {
       possibleMoves.push([i, j]);
     }
   }
-  
-  
+
   return {
     gameboard: board,
     board: board.board,
@@ -202,7 +204,7 @@ export function Player(board) {
       const idx = Math.floor(Math.random() * possibleMoves.length);
       const [row, col] = possibleMoves[idx];
       possibleMoves.splice(idx, 1);
-      
+
       return { row, col };
     }
   }

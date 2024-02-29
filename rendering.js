@@ -21,6 +21,11 @@ function renderBoard(player) {
   for (let i = 0; i < 10; i++) {
     for (let j = 0; j < 10; j++) {
       const squareDiv = document.createElement("div");
+      if (i === 0)
+        squareDiv.textContent = j;
+      if (j === 0) {
+        squareDiv.textContent = i;
+      }
       squareDiv.classList.add("square");
       if (typeof gameboard.board[i][j] === "object") {
         squareDiv.classList.add("ship");
@@ -39,7 +44,7 @@ function renderBoard(player) {
   }
 }
 
-export function attachListeners(player1, player2) {
+export function attachSquareListeners(player1, player2) {
   const playerBoardDiv = document.querySelector(".app > :nth-child(1)");
   const computerBoardDiv = document.querySelector(".app > :nth-child(2)");
   let isPlayer1Move = true;
@@ -107,7 +112,6 @@ function rerender(player1, player2, isPlayer1Move, coords) {
     }
     if (player1.board[i][j] === "x") {
       sq.className = "square miss";
-      // sq.textContent = "X";
     }
   });
 
@@ -140,6 +144,7 @@ function gameOverScreen(text) {
   p.textContent = text;
   const startBtn = document.createElement("button");
   startBtn.textContent = "Play Again";
+  startBtn.classList.add("start-btn");
   gameoverDiv.appendChild(p);
   gameoverDiv.appendChild(startBtn);
   body.appendChild(gameoverDiv);
@@ -150,18 +155,125 @@ function gameOverScreen(text) {
   computerBoardDiv.replaceWith(clone);
 
   startBtn.addEventListener("click", () => {
-    const gameboard1 = Board();
-    gameboard1.placeShip([2, 2], Ship(3), "right");
-    gameboard1.placeShip([4, 2], Ship(3), "down");
-    gameboard1.placeShip([3, 6], Ship(4), "right");
-    const gameboard2 = Board();
-    gameboard2.placeShip([1, 3], Ship(3), "down");
-    gameboard2.placeShip([9, 1], Ship(4), "up");
-    gameboard2.placeShip([6, 6], Ship(3), "left");
-    const player1 = Player(gameboard1);
-    const player2 = Player(gameboard2);
-    render({ player: player1, name: "Player" }, { player: player2, name: "Computer" });
-    attachListeners(player1, player2);
+    startScreen();
     gameoverDiv.remove();
   });
+}
+
+export function startScreen() {
+  // Hello. To start a new game, choose coords to place your ships 
+  // first render the two boards
+  // placeShip(coords, ship(4), direction)
+  // after each placement, rerender the boards
+  const gameboard1 = Board();
+  const gameboard2 = Board();
+  const player1 = Player(gameboard1);
+  const player2 = Player(gameboard2);
+  render({ player: player1, name: "Player" }, { player: player2, name: "Computer" });
+
+  const startDiv = document.createElement("div");
+  startDiv.className = "startscreen";
+  const p1 = document.createElement("p");
+  p1.textContent = "Type coords for each of your ship";
+
+  const div1 = createInput("row");
+  const div2 = createInput("col");
+
+  const select1 = createSelect("directions");
+
+  let shipLength = 4;
+  const btn1 = document.createElement("button");
+  btn1.textContent = "Place Ship";
+  btn1.addEventListener("click", () => {
+    if (shipLength === 1) {
+      console.log("Youre done generating ships.");
+      return;
+    }
+    const rowIdx = Number(document.querySelector("#row").value);
+    const colIdx = Number(document.querySelector("#col").value);
+    const selectValue = document.querySelector("#directions").value;
+    player1.gameboard.placeShip([rowIdx, colIdx], Ship(shipLength), selectValue);
+    render({ player: player1, name: "Player" }, { player: player2, name: "Computer" });
+    shipLength--;
+    if (shipLength === 1) {
+      generateComputerShips(player2);
+      render({ player: player1, name: "Player" }, { player: player2, name: "Computer" });
+      const btn = generateStartBtn();
+      btn.addEventListener("click", () => {
+        attachSquareListeners(player1, player2);
+        startDiv.remove();
+      });
+    }
+  });
+
+
+  startDiv.appendChild(p1);
+  startDiv.appendChild(div1);
+  startDiv.appendChild(div2);
+  startDiv.appendChild(select1);
+  startDiv.appendChild(btn1);
+  document.body.appendChild(startDiv);
+}
+
+
+function createInput(id) {
+  const div1 = document.createElement("div");
+  div1.className = "input-wrapper";
+  const label1 = document.createElement("label");
+  const input1 = document.createElement("input");
+  input1.id = id;
+  label1.htmlFor = id;
+  label1.textContent = `${id}: `;
+  div1.appendChild(label1);
+  div1.appendChild(input1);
+  return div1;
+}
+
+function createSelect(id) {
+  const div1 = document.createElement("div");
+  div1.className = "input-wrapper";
+  const label1 = document.createElement("label");
+  label1.htmlFor = id;
+  label1.textContent = "Choose direction: ";
+  const select = document.createElement("select")
+  select.id = id;
+  const createOption = (direction) => {
+    const option = document.createElement("option");
+    option.value = direction;
+    option.textContent = direction;
+    return option;
+  }
+  const directions = ["up", "right", "down", "left"];
+  directions.forEach(direction => select.appendChild(createOption(direction)));
+
+  div1.appendChild(label1);
+  div1.appendChild(select);
+  return div1;
+}
+
+function generateComputerShips(player) {
+  let shipLength = 4;
+  while (shipLength > 1) {
+    try {
+      const rowIdx = Math.floor(Math.random() * 10);
+      const colIdx = Math.floor(Math.random() * 10);
+      const dirs = player.gameboard.getShipLegalDirections([rowIdx, colIdx], { length: shipLength });
+      const dirIdx = Math.floor(Math.random() * dirs.length);
+      player.gameboard.placeShip([rowIdx, colIdx], Ship(shipLength), dirs[dirIdx])
+    } catch (err) {
+      console.log(err);
+      continue;
+    }
+    shipLength--;
+  }
+}
+
+function generateStartBtn() {
+  const btn = document.createElement("button");
+  btn.classList.add("start-btn");
+  btn.textContent = "Start Game";
+  const startScreenDiv = document.querySelector(".startscreen");
+  startScreenDiv.replaceChildren();
+  startScreenDiv.appendChild(btn);
+  return btn;
 }

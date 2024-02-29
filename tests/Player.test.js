@@ -47,3 +47,4 @@ test("Player(computer) reports that there are no possible moves", () => {
   // 101th play should have no possible moves
   expect(() => player1.randomPlay()).toThrow("no possible moves");
 });
+
