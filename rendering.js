@@ -87,17 +87,18 @@ export function attachSquareListeners(player1, player2) {
           player2.attack(player1, [coords.row, coords.col]);
           isPlayer1Move = !isPlayer1Move;
           rerender(player1, player2, isPlayer1Move, coords);
+
+          const player1Verdict = player1.gameboard.report().includes("not");
+          const player2Verdict = player2.gameboard.report().includes("not");
+          if (!player2Verdict) {
+            gameOverScreen("Player1 won");
+            return;
+          }
+          if (!player1Verdict) {
+            gameOverScreen("Computer won");
+            return;
+          }
         })
-      const player1Verdict = player1.gameboard.report().includes("not all ships sunk");
-      const player2Verdict = player2.gameboard.report().includes("not all ships sunk");
-      if (!player2Verdict) {
-        gameOverScreen("Player1 won");
-        return;
-      }
-      if (!player1Verdict) {
-        gameOverScreen("Computer won");
-        return;
-      }
     });
   });
 }

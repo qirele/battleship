@@ -186,6 +186,32 @@ export function Player(board) {
     }
   }
 
+  const alreadyHitSquares = [];
+
+  let nextProximityMoves = [];
+  const _outOfBounds = ([row, col]) => {
+    return row < 0 || row > 9 || col < 0 || col > 9;
+  }
+  const getProximityMoves = ([row, col]) => {
+    let arr = [];
+    arr.push(!_outOfBounds([row - 1, col]) ? [row - 1, col] : null);
+    arr.push(!_outOfBounds([row + 1, col]) ? [row + 1, col] : null);
+    arr.push(!_outOfBounds([row, col - 1]) ? [row, col - 1] : null);
+    arr.push(!_outOfBounds([row, col + 1]) ? [row, col + 1] : null);
+    arr = arr.filter(el => el !== null);
+
+    arr = arr.filter(el1 => {
+      // check against alreadyHitSquares
+      let shouldKeep = true;
+      if (alreadyHitSquares.some(el2 => el2[0] === el1[0] && el2[1] === el1[1])) {
+        shouldKeep = false;
+      }
+      return shouldKeep;
+    });
+
+    return arr;
+  }
+
   return {
     gameboard: board,
     board: board.board,
@@ -194,13 +220,27 @@ export function Player(board) {
       if (opponentSquare === "x" || opponentSquare === "h") {
         return "twice";
       }
-      opponent.gameboard.receiveAttack([row, col])
+      opponent.gameboard.receiveAttack([row, col]);
+      alreadyHitSquares.push([row, col]);
       if (opponent.board[row][col] === "x") return "miss";
-      if (opponent.board[row][col] === "h") return "hit";
+      if (opponent.board[row][col] === "h") {
+        nextProximityMoves = getProximityMoves([row, col]);
+        return "hit";
+      }
     },
     randomPlay: () => {
       if (possibleMoves.length === 0)
         throw Error("no possible moves");
+
+      if (nextProximityMoves.length !== 0) {
+        const idx = Math.floor(Math.random() * nextProximityMoves.length);
+        const [row, col] = nextProximityMoves[idx];
+        nextProximityMoves.splice(idx, 1);
+        const possibleMovesIdx = possibleMoves.findIndex(el => el[0] === row && el[1] === col);
+        possibleMoves.splice(possibleMovesIdx, 1);
+        return { row, col };
+      }
+
       const idx = Math.floor(Math.random() * possibleMoves.length);
       const [row, col] = possibleMoves[idx];
       possibleMoves.splice(idx, 1);
